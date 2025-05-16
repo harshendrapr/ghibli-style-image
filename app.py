@@ -4,36 +4,36 @@ from PIL import Image
 import io
 import os
 
-# Hugging Face token (you must set this in your environment or Render)
 HF_TOKEN = os.environ.get("HF_API_TOKEN")
 
-st.set_page_config(page_title="Ghibli Style Generator", layout="centered")
-st.title("🌸 Ghibli Style Image Generator (Free Hugging Face)")
+st.title("Ghibli Style Image Generator")
 
-prompt = st.text_input("Describe your scene:", "a cozy forest village in Studio Ghibli style, anime, whimsical, highly detailed")
-submit = st.button("Generate Image")
+prompt = st.text_input(
+    "Enter your prompt:",
+    "a magical forest village in Studio Ghibli style, anime, whimsical, highly detailed"
+)
+generate = st.button("Generate")
 
-if submit:
+if generate:
     if not HF_TOKEN:
-        st.error("Missing HF_API_TOKEN. Please set it as an environment variable.")
+        st.error("Please set HF_API_TOKEN environment variable with your Hugging Face token.")
     else:
-        with st.spinner("Generating image..."):
-            api_url = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
-            headers = {
-                "Authorization": f"Bearer {HF_TOKEN}",
-                "Content-Type": "application/json"
-            }
+        headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+        API_URL = "https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
+        payload = {"inputs": prompt}
 
-            response = requests.post(
-                api_url,
-                headers=headers,
-                json={"inputs": prompt}
-            )
+        with st.spinner("Generating image..."):
+            response = requests.post(API_URL, headers=headers, json=payload)
 
             if response.status_code == 200:
                 image_bytes = response.content
                 image = Image.open(io.BytesIO(image_bytes))
                 st.image(image, caption="Ghibli Style Image")
-                st.download_button("📥 Download", data=image_bytes, file_name="ghibli.png", mime="image/png")
+                st.download_button(
+                    label="Download Image",
+                    data=image_bytes,
+                    file_name="ghibli_style.png",
+                    mime="image/png"
+                )
             else:
-                st.error(f"Generation failed ({response.status_code}): {response.text}")
+                st.error(f"Failed to generate image: {response.status_code} - {response.text}")
