@@ -6,7 +6,7 @@ import os
 
 # --- Setup ---
 REPLICATE_API_TOKEN = os.environ.get("REPLICATE_API_TOKEN")
-REPLICATE_MODEL_VERSION = "c1a5db2c2b6c4d5eb46cb8e7542fdf8c8e6200cded6dfc05bb2de8133ccf43cb"
+REPLICATE_MODEL_VERSION = "d70beb400d223e6432425a5299910329c6050c6abcf97b8c70537d6a1fcb269a"
 
 st.set_page_config(page_title="Ghibli Style Image", layout="centered")
 st.title("🌸 Ghibli Style Image Generator")
