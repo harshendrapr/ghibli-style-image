@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ghibli-style-image
+    env: python
+    buildCommand: ""
+    startCommand: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: REPLICATE_API_TOKEN
+        value: your_token_here
