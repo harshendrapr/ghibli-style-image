@@ -1,4 +1,4 @@
-=import streamlit as st
+import streamlit as st
 import yfinance as yf
 
 st.title("🌎 Global Stock Ticker Viewer")
