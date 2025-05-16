@@ -18,7 +18,7 @@ if submit:
         st.error("Missing HF_API_TOKEN. Please set it as an environment variable.")
     else:
         with st.spinner("Generating image..."):
-            api_url = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+            api_url = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
             headers = {
                 "Authorization": f"Bearer {HF_TOKEN}",
                 "Content-Type": "application/json"
