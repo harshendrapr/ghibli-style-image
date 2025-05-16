@@ -5,7 +5,7 @@ import time
 import os
 
 REPLICATE_API_TOKEN = os.environ.get("REPLICATE_API_TOKEN")
-REPLICATE_MODEL_VERSION = "rnd_BYoY8kBwwpDXl1sfu7DmpdiEbB1B"
+REPLICATE_MODEL_VERSION = "c1a5db2c2b6c4d5eb46cb8e7542fdf8c8e6200cded6dfc05bb2de8133ccf43cb"
 
 st.set_page_config(page_title="Ghibli Style Image", layout="centered")
 st.title("🌸 Ghibli Style Image Generator")
