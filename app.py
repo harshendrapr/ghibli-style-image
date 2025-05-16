@@ -1,39 +1,36 @@
-import streamlit as st
-import requests
-from PIL import Image
-import io
-import os
+=import streamlit as st
+import yfinance as yf
 
-HF_TOKEN = os.environ.get("HF_API_TOKEN")
+st.title("🌎 Global Stock Ticker Viewer")
 
-st.title("Ghibli Style Image Generator")
+ticker_input = st.text_input("Enter stock ticker (e.g. AAPL, RELIANCE.NS, MSFT, 7203.T):", "AAPL")
 
-prompt = st.text_input(
-    "Enter your prompt:",
-    "a magical forest village in Studio Ghibli style, anime, whimsical, highly detailed"
-)
-generate = st.button("Generate")
+if st.button("Get Stock Info"):
+    try:
+        stock = yf.Ticker(ticker_input)
+        data = stock.history(period="1d")
 
-if generate:
-    if not HF_TOKEN:
-        st.error("Please set HF_API_TOKEN environment variable with your Hugging Face token.")
-    else:
-        headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-        API_URL = "https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4"
-        payload = {"inputs": prompt}
+        if data.empty:
+            st.error("No data found for ticker. Check ticker symbol.")
+        else:
+            st.subheader(f"{ticker_input} - Latest Close Price")
+            latest_close = data['Close'].iloc[-1]
+            st.metric(label="Close Price", value=f"${latest_close:.2f}")
 
-        with st.spinner("Generating image..."):
-            response = requests.post(API_URL, headers=headers, json=payload)
+            st.write("### Stock Info")
+            info = stock.info
+            st.write({
+                "Name": info.get("longName", "N/A"),
+                "Sector": info.get("sector", "N/A"),
+                "Industry": info.get("industry", "N/A"),
+                "Market Cap": info.get('marketCap', "N/A"),
+                "Previous Close": info.get("previousClose", "N/A"),
+                "Open": info.get("open", "N/A"),
+                "Day's Range": f"{info.get('dayLow', 'N/A')} - {info.get('dayHigh', 'N/A')}",
+                "52 Week Range": f"{info.get('fiftyTwoWeekLow', 'N/A')} - {info.get('fiftyTwoWeekHigh', 'N/A')}",
+                "Exchange": info.get("exchange", "N/A"),
+                "Currency": info.get("currency", "N/A"),
+            })
 
-            if response.status_code == 200:
-                image_bytes = response.content
-                image = Image.open(io.BytesIO(image_bytes))
-                st.image(image, caption="Ghibli Style Image")
-                st.download_button(
-                    label="Download Image",
-                    data=image_bytes,
-                    file_name="ghibli_style.png",
-                    mime="image/png"
-                )
-            else:
-                st.error(f"Failed to generate image: {response.status_code} - {response.text}")
+    except Exception as e:
+        st.error(f"Error: {e}")
